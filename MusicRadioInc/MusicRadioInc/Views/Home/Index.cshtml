@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    @if (ViewBag.UserName != null)
+    {
+        <h1 class="display-4">¡Bienvenido, @ViewBag.UserName!</h1>
+        <p>Has iniciado sesión exitosamente.</p>
+        <p><a asp-controller="Login" asp-action="Logout">Cerrar Sesión</a></p>
+    }
+    else
+    {
+        <h1 class="display-4">¡Bienvenido!</h1>
+        <p>Por favor, <a asp-controller="Login" asp-action="Index">inicia sesión</a> para continuar.</p>
+    }
+</div>
