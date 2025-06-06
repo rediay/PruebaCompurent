@@ -21,48 +21,123 @@
 
 @if (Model.AvailableAlbums != null && Model.AvailableAlbums.Any())
 {
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Álbum</th>
-                <th>Precio</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var album in Model.AvailableAlbums) @* Iterar sobre AvailableAlbums del ViewModel *@
-            {
+    <form id="buyAlbumsForm" asp-action="BuySelectedAlbums" method="post">
+        <table class="table table-striped">
+            <thead>
                 <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => album.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => album.Price)
-                    </td>
-                    <td>
+                    <th></th> @* Columna para el checkbox *@
+                    <th>Álbum</th>
+                    <th>Precio</th>
+                    <th>Estado</th> 
+                    <th>Canciones</th> 
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var album in Model.AvailableAlbums)
+                {
+                    <tr>
+                        <td>
                         @{
                             // Verificar si el usuario ya compró este álbum
                             var isPurchased = Model.PurchasedAlbumIds != null && Model.PurchasedAlbumIds.Contains(album.Id);
                         }
+                            @if (!isPurchased)
+                            {
+                                <input type="checkbox" name="selectedAlbumIds" value="@album.Id" data-price="@album.Price" class="album-checkbox" />
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => album.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => album.Price)
+                        </td>
+                        <td>                        
+                            @if (isPurchased)
+                            {
+                                <span class="badge bg-secondary">Adquirido</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-info">Disponible</span>
+                            }
+                        </td>
+                        <td>
+                            @if (album.Songs != null && album.Songs.Any())
+                            {
+                                <button class="btn btn-sm btn-info" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSongs_@album.Id" aria-expanded="false" aria-controls="collapseSongs_@album.Id">
+                                    Ver Canciones (@album.Songs.Count())
+                                </button>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Sin canciones</span>
+                            }
+                        </td>
+                    </tr>
+                    @* Fila colapsable para las canciones, fuera del <td> principal *@
+                    @if (album.Songs != null && album.Songs.Any())
+                    {
+                        <tr class="collapse" id="collapseSongs_@album.Id">
+                            <td colspan="5">
+                                @* Ocupa el ancho de todas las columnas (5 ahora) *@
+                                <div class="card card-body bg-light mt-2 mb-2">
+                                    <h5>Canciones de "@album.Name"</h5>
+                                    <ul class="list-group list-group-flush">
+                                        @foreach (var song in album.Songs)
+                                        {
+                                            <li class="list-group-item bg-light">@song.Name</li>
+                                        }
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
 
-                        @if (isPurchased)
-                        {
-                            <button class="btn btn-secondary" disabled>Adquirido</button>
-                        }
-                        else
-                        {
-                            <form asp-action="BuyAlbum" method="post" style="display:inline;">
-                                <input type="hidden" name="albumId" value="@album.Id" />
-                                <button type="submit" class="btn btn-success">Comprar (@album.Price.ToString("C"))</button>
-                            </form>
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <div>
+                <strong>Total de la Compra: </strong> <span id="totalPrice">0.00</span>
+            </div>
+            <div>
+                <button type="submit" id="buyButton" class="btn btn-primary" disabled>Comprar Seleccionados</button>
+            </div>
+        </div>
+    </form>
 }
 else
 {
     <p>No hay álbumes disponibles para mostrar.</p>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const checkboxes = document.querySelectorAll('.album-checkbox');
+            const totalPriceSpan = document.getElementById('totalPrice');
+            const buyButton = document.getElementById('buyButton');
+
+            function calculateTotal() {
+                let total = 0;
+                let selectedCount = 0;
+                checkboxes.forEach(function (checkbox) {
+                    if (checkbox.checked) {
+                        total += parseFloat(checkbox.dataset.price);
+                        selectedCount++;
+                    }
+                });
+                totalPriceSpan.textContent = total.toFixed(2); // Formato a 2 decimales
+                buyButton.disabled = selectedCount === 0; // Desactivar el botón si no hay nada seleccionado
+            }
+
+            checkboxes.forEach(function (checkbox) {
+                checkbox.addEventListener('change', calculateTotal);
+            });
+
+            // Calcular el total inicial por si algún checkbox ya está marcado (ej. al volver de la página)
+            calculateTotal();
+        });
+    </script>
 }

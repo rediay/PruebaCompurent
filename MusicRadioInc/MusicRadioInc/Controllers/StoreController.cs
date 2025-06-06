@@ -66,5 +66,30 @@ namespace MusicRadioInc.Controllers
             var myPurchases = await _purchaseService.GetUserPurchases(userLoginId);
             return View(myPurchases);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BuySelectedAlbums([FromForm] List<int> selectedAlbumIds) // Recibe una lista de IDs
+        {
+            var userLoginId = HttpContext.Session.GetString("UserLoginId");
+
+            if (selectedAlbumIds == null || !selectedAlbumIds.Any())
+            {
+                TempData["ErrorMessage"] = "No se ha seleccionado ningún álbum para comprar.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var (success, message) = await _purchaseService.BuyMultipleAlbums(selectedAlbumIds, userLoginId);
+
+            if (success)
+            {
+                TempData["SuccessMessage"] = message;
+            }
+            else
+            {
+                TempData["ErrorMessage"] = message;
+            }
+            return RedirectToAction(nameof(Index)); // Siempre redirigir a Index para ver el estado actualizado
+        }
     }
 }

@@ -18,7 +18,11 @@ namespace MusicRadioInc.Services.Implementations
 
         public async Task<IEnumerable<AlbumSet>> GetAllAlbums()
         {
-            return await _context.AlbumSets.OrderBy(a => a.Name).ToListAsync();
+            // Cargar todos los álbumes e incluir sus canciones, ordenadas por nombre
+            return await _context.AlbumSets
+                                 .Include(a => a.Songs.OrderBy(s => s.Name)) // Incluir las canciones del álbum
+                                 .OrderBy(a => a.Name) // Ordenar los álbumes por nombre
+                                 .ToListAsync();
         }
 
         public async Task<AlbumSet> GetAlbumById(int id)

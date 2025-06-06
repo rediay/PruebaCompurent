@@ -28,10 +28,13 @@
                     Álbum
                 </th>
                 <th>
-                    Total
+                    Total pagado
                 </th>
                 <th>
                     Fecha de Compra
+                </th>
+                <th>
+                    Canciones
                 </th>
             </tr>
         </thead>
@@ -48,7 +51,36 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.PurchaseDate)
                     </td>
+                    <td>
+                        @if (item.Album.Songs != null && item.Album.Songs.Any())
+                        {
+                            <button class="btn btn-sm btn-info" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSongs_@item.Id" aria-expanded="false" aria-controls="collapseSongs_@item.Id">
+                                Ver Canciones (@item.Album.Songs.Count())
+                            </button>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Sin canciones</span>
+                        }
+                    </td>
                 </tr>
+                @if (item.Album.Songs != null && item.Album.Songs.Any())
+                {
+                    <tr class="collapse" id="collapseSongs_@item.Id">
+                        <td colspan="4">
+                            @* Ocupa el ancho de todas las columnas de la fila principal *@
+                            <div class="card card-body bg-light mt-2 mb-2">
+                                <h5>Canciones de "@item.Album.Name"</h5>
+                                <ul class="list-group list-group-flush">
+                                    @foreach (var song in item.Album.Songs)
+                                    {
+                                        <li class="list-group-item bg-light">@song.Name</li>
+                                    }
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                }
             }
         </tbody>
     </table>
@@ -57,3 +89,9 @@ else
 {
     <p>Aún no has realizado ninguna compra.</p>
 }
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }
