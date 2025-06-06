@@ -43,8 +43,6 @@ namespace MusicRadioInc.Filters
                 }
             }
 
-            // Si llega aquí, el usuario está autenticado y tiene los roles correctos (o no se especificaron roles)
-            // Continuar con la ejecución de la acción
         }
     }
 }

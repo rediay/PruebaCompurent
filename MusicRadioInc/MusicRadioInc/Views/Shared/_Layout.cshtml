@@ -32,10 +32,6 @@
                         }
                         @if (isLoggedIn)
                         {
-                            @* <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Logout">Cerrar Sesión</a>
-                            </li> *@
-
                             // Enlaces para administradores
                             if (userRole == "Admin")
                             {
@@ -68,10 +64,6 @@
                             <li class="nav-item">
                                 <a class="btn btn-success" asp-area="" asp-controller="Login" asp-action="Index">Iniciar Sesión</a>
                             </li>
-                            @* <li class="nav-item ms-2">
-                                
-                                <a class="btn btn-info" asp-area="" asp-controller="Login" asp-action="Register">Registrarse</a>
-                            </li> *@
                         }
                     </ul>
                 </div>

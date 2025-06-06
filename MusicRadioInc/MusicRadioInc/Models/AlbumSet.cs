@@ -11,7 +11,7 @@ namespace MusicRadioInc.Models
 
         [Required(ErrorMessage = "El nombre del álbum es obligatorio.")]
         [StringLength(255, ErrorMessage = "El nombre del álbum no debe exceder los 255 caracteres.")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [Required(ErrorMessage = "El precio del álbum es obligatorio.")]
         [Column(TypeName = "decimal(18, 2)")] // Tipo de dato para valores monetarios

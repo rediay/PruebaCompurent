@@ -31,25 +31,6 @@ namespace MusicRadioInc.Services.Implementations
                 }
 
                 var client = await _context.Clients.FirstOrDefaultAsync(c => c.UserLoginId == userLoginId);
-                //if (client == null)
-                //{
-                //    var user = await _context.Clients.FirstOrDefaultAsync(u => u.UserLoginId == userLoginId);
-                //    if (user == null)
-                //    {
-                //        return (false, "Información de usuario no disponible para crear cliente.");
-                //    }
-
-                //    client = new Client
-                //    {
-                //        Id = user.Id,
-                //        Name = user.Name ?? user.UserLoginId,
-                //        Mail = user.Mail,
-                //        Direction = user.Direction,
-                //        Phone = user.Phone
-                //    };
-                //    _context.Clients.Add(client);
-                //    await _context.SaveChangesAsync();
-                //}
 
                 var purchaseDetail = new PurchaseDetail
                 {
@@ -70,30 +51,6 @@ namespace MusicRadioInc.Services.Implementations
                 return (false, $"Error al procesar la compra: {ex.Message}");
             }
         }
-
-        //public async Task<IEnumerable<PurchaseDetail>> GetUserPurchases(string userId)
-        //{
-        //    if (userId.Equals(0))
-        //    {
-        //        return new List<PurchaseDetail>(); // Si no hay usuario, no hay compras
-        //    }
-
-        //    try
-        //    {
-        //        int setUsuarioId = int.Parse(userId);
-        //        return await _context.PurchaseDetails
-        //                             .Include(pd => pd.Album)
-        //                             .Where(pd => pd.Client_Id == setUsuarioId)
-        //                             .OrderByDescending(pd => pd.PurchaseDate)
-        //                             .ToListAsync();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"Exception in GetUserPurchases: {ex.Message}");
-        //        // Devolver una lista vacía y registrar el error es mejor que relanzar en muchos casos de lectura
-        //        return new List<PurchaseDetail>();
-        //    }
-        //}
 
         public async Task<IEnumerable<PurchaseDetail>> GetUserPurchases(string userLoginId)
         {

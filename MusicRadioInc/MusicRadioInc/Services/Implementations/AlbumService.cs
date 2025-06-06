@@ -103,8 +103,6 @@ namespace MusicRadioInc.Services.Implementations
                         command.Parameters.Add(albumIdParam);
 
                         await command.ExecuteNonQueryAsync();
-                        // El valor del parámetro de salida aquí no es tan crítico para DELETE,
-                        // pero se puede obtener si se desea para logueo.
                     }
                 }
                 finally
