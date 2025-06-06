@@ -1,0 +1,68 @@
+﻿@model MusicRadioInc.ViewModels.StoreIndexViewModel
+
+@{
+    ViewData["Title"] = "Álbumes Disponibles";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+@if (Model.AvailableAlbums != null && Model.AvailableAlbums.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Álbum</th>
+                <th>Precio</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var album in Model.AvailableAlbums) @* Iterar sobre AvailableAlbums del ViewModel *@
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => album.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => album.Price)
+                    </td>
+                    <td>
+                        @{
+                            // Verificar si el usuario ya compró este álbum
+                            var isPurchased = Model.PurchasedAlbumIds != null && Model.PurchasedAlbumIds.Contains(album.Id);
+                        }
+
+                        @if (isPurchased)
+                        {
+                            <button class="btn btn-secondary" disabled>Adquirido</button>
+                        }
+                        else
+                        {
+                            <form asp-action="BuyAlbum" method="post" style="display:inline;">
+                                <input type="hidden" name="albumId" value="@album.Id" />
+                                <button type="submit" class="btn btn-success">Comprar (@album.Price.ToString("C"))</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No hay álbumes disponibles para mostrar.</p>
+}

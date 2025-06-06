@@ -1,16 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MusicRadioInc.Data;
+using MusicRadioInc.Interfaces;
 using MusicRadioInc.Models;
 namespace MusicRadioInc.Controllers
 {
     public class LoginController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IAuthService _authService;
 
-        public LoginController(ApplicationDbContext context)
+        public LoginController(ApplicationDbContext context, IAuthService authService)
         {
             _context = context;
+            _authService = authService;
         }
 
         // GET: Login/Index
@@ -34,17 +37,13 @@ namespace MusicRadioInc.Controllers
                 try
                 {
 
-                    var user = await _context.Clients
-                        .Include(u => u.Rol)
-                        .FirstOrDefaultAsync(u => u.UserLoginId == model.UserLoginId);
+                    var user = await _authService.ValidateUserCredentials(model);
 
-                    //bool isPasswordValid = BCrypt.Net.BCrypt.Verify(model.Password, user.Password);
-
-                    if (user != null && BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
+                    if (user != null)
                     {
                         // Login exitoso
-                        HttpContext.Session.SetString("UserLoginId", user.UserLoginId);
-                        HttpContext.Session.SetString("UserName", user.Name ?? user.UserLoginId); // Almacenar el nombre o el ID de usuario
+                        HttpContext.Session.SetString("UserLoginId", user.Id.ToString());
+                        HttpContext.Session.SetString("UserName", user.UserLoginId ?? user.Name); // Almacenar el nombre o el ID de usuario
                         HttpContext.Session.SetString("UserRole", user.Rol.NombreRol);
 
                         // Redirigir al usuario a la página de inicio o a un dashboard
@@ -88,35 +87,15 @@ namespace MusicRadioInc.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
+                var registrationSuccess = await _authService.RegisterNewUser(model);
+                if (registrationSuccess)
                 {
-                    // Verificar si el UserLoginId ya existe
-                    if (await _context.Clients.AnyAsync(u => u.UserLoginId == model.UserLoginId))
-                    {
-                        ModelState.AddModelError("UserLoginId", "Este ID de usuario ya está registrado.");
-                        return View(model);
-                    }
-
-                    // Puedes agregar aquí un hashing de la contraseña si es necesario para mayor seguridad
-                    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
-                    model.Password = hashedPassword;
-                    model.RolId = 2;
-
-                    _context.Add(model);
-                    await _context.SaveChangesAsync();
-                    ViewBag.SuccessMessage = "Registro exitoso. Ya puedes iniciar sesión.";
-                    return RedirectToAction("Index", "Login"); // Redirigir al login después del registro
+                    TempData["SuccessMessage"] = "Registro exitoso. Ya puedes iniciar sesión.";
+                    return RedirectToAction("Index", "Login");
                 }
-                catch (DbUpdateException ex)
+                else
                 {
-                    // Controlar excepciones específicas de la base de datos, como violación de índice único
-                    Console.WriteLine($"Error al registrar usuario: {ex.InnerException?.Message}");
-                    ModelState.AddModelError(string.Empty, "Ocurrió un error al registrar el usuario. Asegúrese de que el ID de usuario no esté duplicado.");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error general al registrar usuario: {ex.Message}");
-                    ModelState.AddModelError(string.Empty, "Ocurrió un error inesperado al registrar el usuario.");
+                    ModelState.AddModelError("UserLoginId", "Este ID de usuario ya está registrado o ocurrió un error.");
                 }
             }
             return View(model);

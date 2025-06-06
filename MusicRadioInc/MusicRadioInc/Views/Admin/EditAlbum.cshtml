@@ -1,0 +1,90 @@
+﻿@model MusicRadioInc.Models.AlbumSet
+
+@{
+    ViewData["Title"] = Model.Id == 0 ? "Crear Álbum" : "Editar Álbum";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h4>Álbum</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="SaveAlbum">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" /> @* Para saber si es Insert o Update *@
+
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-3">
+                <input type="submit" value="Guardar Álbum" class="btn btn-primary" />
+                <a asp-action="ManageAlbums" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-6">
+        @if (Model.Id != 0) // Solo si es un álbum existente, muestra las canciones
+        {
+            <h4 class="mt-4">Canciones del Álbum</h4>
+            <hr />
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success" role="alert">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @TempData["ErrorMessage"]
+                </div>
+            }
+
+            <form asp-action="AddSongToAlbum" method="post" class="mb-3">
+                <input type="hidden" name="albumId" value="@Model.Id" />
+                <div class="input-group">
+                    <input type="text" name="songName" class="form-control" placeholder="Nombre de la nueva canción" required /> @* Añadido 'required' *@
+                    <button type="submit" class="btn btn-success">Agregar Canción</button>
+                </div>
+                @* El error de validación de songName se maneja en el servicio y se muestra en TempData.
+                   Aquí ya no necesitamos un span asp-validation-for específico si solo usamos TempData. *@
+            </form>
+
+            @if (Model.Songs != null && Model.Songs.Any())
+            {
+                <ul class="list-group">
+                    @foreach (var song in Model.Songs)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            @song.Name
+                            <form asp-action="RemoveSongFromAlbum" method="post" style="display:inline;">
+                                <input type="hidden" name="songId" value="@song.Id" />
+                                <input type="hidden" name="albumId" value="@Model.Id" />
+                                <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                            </form>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>No hay canciones en este álbum aún.</p>
+            }
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

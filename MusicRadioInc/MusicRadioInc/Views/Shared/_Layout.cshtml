@@ -28,32 +28,29 @@
                         @{
                             // Obtener el rol del usuario de la sesión
                             var userRole = Context.Session.GetString("UserRole");
+                            var isLoggedIn = !string.IsNullOrEmpty(Context.Session.GetString("UserLoginId"));
                         }
-                        @if (Context.Session.GetString("UserLoginId") != null)
+                        @if (isLoggedIn)
                         {
-                            // Usuario logueado
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Logout">Cerrar Sesión</a>
                             </li>
 
-                            // Mostrar enlace solo para administradores
+                            // Enlaces para administradores
                             if (userRole == "Admin")
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Dashboard">Agregar album</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="ManageAlbums">Gestionar Álbumes</a>
                                 </li>
                             }
 
-                            // Mostrar enlace para administradores y editores
-                            if (userRole == "Admin" || userRole == "User")
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Content" asp-action="Manage">Comprar album</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Content" asp-action="Manage">Álbumes comprados</a>
-                                </li>
-                            }
+                            // Enlaces para cualquier usuario logueado (incluyendo Admin, User, Editor)
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Store" asp-action="Index">Álbumes Disponibles</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Store" asp-action="MyPurchases">Mis Compras</a>
+                            </li>
                         }
                         else
                         {

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using MusicRadioInc.Controllers;
 using MusicRadioInc.Data;
+using MusicRadioInc.Interfaces;
 using MusicRadioInc.Models;
 
 namespace MusicRadioInc.Tests
@@ -15,6 +16,7 @@ namespace MusicRadioInc.Tests
         private List<Client> _usuarios;
         private LoginController _controller;
         private Mock<ISession> _mockSession;
+        private Mock<IAuthService> _mockAuthService;
 
         public LoginControllerTests()
         {
@@ -63,7 +65,7 @@ namespace MusicRadioInc.Tests
             mockHttpContext.Setup(c => c.Session).Returns(_mockSession.Object);
 
             // Inicializar el controlador
-            _controller = new LoginController(_mockContext.Object)
+            _controller = new LoginController(_mockContext.Object, _mockAuthService.Object)
             {
                 ControllerContext = new ControllerContext
                 {
