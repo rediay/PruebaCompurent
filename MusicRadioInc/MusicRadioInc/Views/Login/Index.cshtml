@@ -1,33 +1,53 @@
 ﻿@model MusicRadioInc.Models.LoginViewModel
 
 @{
-    ViewData["Title"] = "Inicio de Sesión";
+    ViewData["Title"] = "Iniciar Sesión";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Inicio de Sesión</h1>
+<div class="d-flex justify-content-center align-items-center vh-100">
+    @* Claves para centrado *
+    <div class="col-md-6 col-lg-4"> @* Definimos el tamaño del formulario (mediano en MD, pequeño en LG) *@
+    <div class="card shadow-sm">
+        <div class="card-header text-center bg-primary text-white">
+            <h2>@ViewData["Title"]</h2>
+        </div>
+        <div class="card-body">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success" role="alert">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @TempData["ErrorMessage"]
+                </div>
+            }
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Index">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="UserLoginId" class="control-label"></label>
-                <input asp-for="UserLoginId" class="form-control" />
-                <span asp-validation-for="UserLoginId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group mt-3">
-                <input type="submit" value="Iniciar Sesión" class="btn btn-primary" />
-            </div>
-        </form>
-        <div class="mt-2">
-            <p>¿No tienes una cuenta? <a asp-action="Register">Regístrate aquí</a></p>
+            <form asp-action="Index">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group mb-3">
+                    <label asp-for="UserLoginId" class="control-label"></label>
+                    <input asp-for="UserLoginId" class="form-control" />
+                    <span asp-validation-for="UserLoginId" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label asp-for="Password" class="control-label"></label>
+                    <input asp-for="Password" type="password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group d-grid gap-2">
+                    <input type="submit" value="Acceder" class="btn btn-primary" />
+                </div>
+                <div class="mt-3 text-center">
+                    <p>¿No tienes una cuenta? <a asp-action="Register">Regístrate aquí</a></p>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 </div>
 
 @section Scripts {

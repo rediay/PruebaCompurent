@@ -19,12 +19,12 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
+                        @* <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        </li> *@
                         @{
                             // Obtener el rol del usuario de la sesión
                             var userRole = Context.Session.GetString("UserRole");
@@ -32,9 +32,9 @@
                         }
                         @if (isLoggedIn)
                         {
-                            <li class="nav-item">
+                            @* <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Logout">Cerrar Sesión</a>
-                            </li>
+                            </li> *@
 
                             // Enlaces para administradores
                             if (userRole == "Admin")
@@ -52,14 +52,26 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Store" asp-action="MyPurchases">Mis Compras</a>
                             </li>
                         }
+                    </ul>
+                    <ul class="navbar-nav">
+                        @if (isLoggedIn)
+                        {
+                            <li class="nav-item">
+                                <span class="nav-link text-dark">Bienvenido, @Context.Session.GetString("UserName")!</span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-danger" asp-area="" asp-controller="Login" asp-action="Logout">Cerrar Sesión</a>
+                            </li>
+                        }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Index">Iniciar Sesión</a>
+                                <a class="btn btn-success" asp-area="" asp-controller="Login" asp-action="Index">Iniciar Sesión</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Register">Registrarse</a>
-                            </li>
+                            @* <li class="nav-item ms-2">
+                                
+                                <a class="btn btn-info" asp-area="" asp-controller="Login" asp-action="Register">Registrarse</a>
+                            </li> *@
                         }
                     </ul>
                 </div>
