@@ -5,7 +5,7 @@ using MusicRadioInc.Filters;
 
 namespace MusicRadioInc.Controllers
 {
-    [CustomAuthorize("Admin", "Editor")]
+    [CustomAuthorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
