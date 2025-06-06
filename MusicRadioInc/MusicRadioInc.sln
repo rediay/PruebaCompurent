@@ -5,6 +5,8 @@ VisualStudioVersion = 17.13.35931.197 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicRadioInc", "MusicRadioInc\MusicRadioInc.csproj", "{27640EC3-2FB0-4919-97B4-D8FD5D332FE5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicRadioInc.Tests", "MusicRadioInc.Tests\MusicRadioInc.Tests.csproj", "{8D8D91A6-7A64-430C-B846-6FAC6C05DC45}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{27640EC3-2FB0-4919-97B4-D8FD5D332FE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27640EC3-2FB0-4919-97B4-D8FD5D332FE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27640EC3-2FB0-4919-97B4-D8FD5D332FE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D8D91A6-7A64-430C-B846-6FAC6C05DC45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D8D91A6-7A64-430C-B846-6FAC6C05DC45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D8D91A6-7A64-430C-B846-6FAC6C05DC45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D8D91A6-7A64-430C-B846-6FAC6C05DC45}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

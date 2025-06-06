@@ -30,5 +30,12 @@ namespace MusicRadioInc.Models
 
         [StringLength(20, ErrorMessage = "El teléfono no debe sobrepasar los 20 caracteres.")]
         public string? Phone { get; set; }
+
+        // Relación con el rol
+        [Required(ErrorMessage = "El rol es obligatorio.")]
+        public int RolId { get; set; } // Foreign Key
+
+        [ForeignKey("RolId")]
+        public Rol Rol { get; set; } // Propiedad de navegación
     }
 }

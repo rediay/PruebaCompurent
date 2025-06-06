@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MusicRadioInc.Models;
-using MusicRadioInc.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
+using MusicRadioInc.Data;
+using MusicRadioInc.Models;
 namespace MusicRadioInc.Controllers
 {
     public class LoginController : Controller
@@ -36,14 +33,19 @@ namespace MusicRadioInc.Controllers
             {
                 try
                 {
-                    var user = await _context.Usuarios
-                        .FirstOrDefaultAsync(u => u.UserLoginId == model.UserLoginId && u.Password == model.Password);
 
-                    if (user != null)
+                    var user = await _context.Usuarios
+                        .Include(u => u.Rol)
+                        .FirstOrDefaultAsync(u => u.UserLoginId == model.UserLoginId);
+
+                    //bool isPasswordValid = BCrypt.Net.BCrypt.Verify(model.Password, user.Password);
+
+                    if (user != null && BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
                     {
                         // Login exitoso
                         HttpContext.Session.SetString("UserLoginId", user.UserLoginId);
                         HttpContext.Session.SetString("UserName", user.Name ?? user.UserLoginId); // Almacenar el nombre o el ID de usuario
+                        HttpContext.Session.SetString("UserRole", user.Rol.NombreRol);
 
                         // Redirigir al usuario a la página de inicio o a un dashboard
                         return RedirectToAction("Index", "Home");
@@ -96,7 +98,9 @@ namespace MusicRadioInc.Controllers
                     }
 
                     // Puedes agregar aquí un hashing de la contraseña si es necesario para mayor seguridad
-                    // model.Password = HashPassword(model.Password);
+                    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
+                    model.Password = hashedPassword;
+                    model.RolId = 2;
 
                     _context.Add(model);
                     await _context.SaveChangesAsync();

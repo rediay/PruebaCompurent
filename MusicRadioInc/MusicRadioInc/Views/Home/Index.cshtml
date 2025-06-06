@@ -7,7 +7,17 @@
     {
         <h1 class="display-4">¡Bienvenido, @ViewBag.UserName!</h1>
         <p>Has iniciado sesión exitosamente.</p>
+        <p>Tu rol: <strong>@ViewBag.UserRole</strong></p>
         <p><a asp-controller="Login" asp-action="Logout">Cerrar Sesión</a></p>
+
+        @if (ViewBag.UserRole == "Admin")
+        {
+            <p>Eres un administrador y tienes acceso a funciones avanzadas.</p>
+        }
+        else if (ViewBag.UserRole == "Editor")
+        {
+            <p>Eres un editor.</p>
+        }
     }
     else
     {

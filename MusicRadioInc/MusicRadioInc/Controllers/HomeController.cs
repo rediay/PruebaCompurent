@@ -1,9 +1,11 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using MusicRadioInc.Models;
+using MusicRadioInc.Filters;
 
 namespace MusicRadioInc.Controllers
 {
+    [CustomAuthorize("Admin", "Editor")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -17,10 +19,18 @@ namespace MusicRadioInc.Controllers
         {
             // Recuperar el nombre del usuario de la sesión
             ViewBag.UserName = HttpContext.Session.GetString("UserName");
+            ViewBag.UserRole = HttpContext.Session.GetString("UserRole");
             return View();
         }
 
+        [CustomAuthorize("Admin")]
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        // Acción para acceso denegado
+        public IActionResult AccessDenied()
         {
             return View();
         }
