@@ -34,7 +34,7 @@ namespace MusicRadioInc.Controllers
                 try
                 {
 
-                    var user = await _context.Usuarios
+                    var user = await _context.Clients
                         .Include(u => u.Rol)
                         .FirstOrDefaultAsync(u => u.UserLoginId == model.UserLoginId);
 
@@ -84,14 +84,14 @@ namespace MusicRadioInc.Controllers
         // POST: Login/Register (Opcional: para registrar nuevos usuarios)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(Usuario model)
+        public async Task<IActionResult> Register(Client model)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
                     // Verificar si el UserLoginId ya existe
-                    if (await _context.Usuarios.AnyAsync(u => u.UserLoginId == model.UserLoginId))
+                    if (await _context.Clients.AnyAsync(u => u.UserLoginId == model.UserLoginId))
                     {
                         ModelState.AddModelError("UserLoginId", "Este ID de usuario ya está registrado.");
                         return View(model);

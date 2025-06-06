@@ -19,6 +19,6 @@ namespace MusicRadioInc.Models
         // O una relación uno a muchos simple si cada usuario tiene un solo rol
         // Para simplificar, asumiremos una relación uno a muchos donde cada Usuario tiene un solo Rol por ahora.
         // Si necesitas muchos a muchos, se complica un poco más con una tabla de unión.
-        public ICollection<Usuario> Usuarios { get; set; }
+        public ICollection<Client> Clients { get; set; }
     }
 }

@@ -11,33 +11,33 @@ namespace MusicRadioInc.Tests
     public class LoginControllerTests
     {
         private Mock<ApplicationDbContext> _mockContext;
-        private Mock<DbSet<Usuario>> _mockDbSet;
-        private List<Usuario> _usuarios;
+        private Mock<DbSet<Client>> _mockDbSet;
+        private List<Client> _usuarios;
         private LoginController _controller;
         private Mock<ISession> _mockSession;
 
         public LoginControllerTests()
         {
             // Inicializar datos de prueba
-            _usuarios = new List<Usuario>
+            _usuarios = new List<Client>
             {
-                new Usuario { Id = 1, UserLoginId = "user1", Password = BCrypt.Net.BCrypt.HashPassword("Pass123"), Name = "Usuario Uno", Email = "user1@example.com" },
-                new Usuario { Id = 2, UserLoginId = "admin", Password = BCrypt.Net.BCrypt.HashPassword("AdminPass"), Name = "Administrador", Email = "admin@example.com" }
+                new Client { Id = 1, UserLoginId = "user1", Password = BCrypt.Net.BCrypt.HashPassword("Pass123"), Name = "Usuario Uno", Mail = "user1@example.com" },
+                new Client { Id = 2, UserLoginId = "admin", Password = BCrypt.Net.BCrypt.HashPassword("AdminPass"), Name = "Administrador", Mail = "admin@example.com" }
             };
 
             // Configurar DbSet mock
-            _mockDbSet = new Mock<DbSet<Usuario>>();
-            _mockDbSet.As<IQueryable<Usuario>>().Setup(m => m.Provider).Returns(_usuarios.AsQueryable().Provider);
-            _mockDbSet.As<IQueryable<Usuario>>().Setup(m => m.Expression).Returns(_usuarios.AsQueryable().Expression);
-            _mockDbSet.As<IQueryable<Usuario>>().Setup(m => m.ElementType).Returns(_usuarios.AsQueryable().ElementType);
-            _mockDbSet.As<IQueryable<Usuario>>().Setup(m => m.GetEnumerator()).Returns(_usuarios.AsQueryable().GetEnumerator());
+            _mockDbSet = new Mock<DbSet<Client>>();
+            _mockDbSet.As<IQueryable<Client>>().Setup(m => m.Provider).Returns(_usuarios.AsQueryable().Provider);
+            _mockDbSet.As<IQueryable<Client>>().Setup(m => m.Expression).Returns(_usuarios.AsQueryable().Expression);
+            _mockDbSet.As<IQueryable<Client>>().Setup(m => m.ElementType).Returns(_usuarios.AsQueryable().ElementType);
+            _mockDbSet.As<IQueryable<Client>>().Setup(m => m.GetEnumerator()).Returns(_usuarios.AsQueryable().GetEnumerator());
 
             // Configurar DbContext mock
             _mockContext = new Mock<ApplicationDbContext>(new DbContextOptions<ApplicationDbContext>());
-            _mockContext.Setup(c => c.Usuarios).Returns(_mockDbSet.Object);
+            _mockContext.Setup(c => c.Clients).Returns(_mockDbSet.Object);
 
             // Simular operaciones de agregar y guardar cambios
-            _mockDbSet.Setup(m => m.Add(It.IsAny<Usuario>())).Callback<Usuario>((s) => _usuarios.Add(s));
+            _mockDbSet.Setup(m => m.Add(It.IsAny<Client>())).Callback<Client>((s) => _usuarios.Add(s));
             _mockContext.Setup(m => m.SaveChangesAsync(default)).ReturnsAsync(1);
 
             // Simular sesión con un diccionario interno
@@ -167,12 +167,12 @@ namespace MusicRadioInc.Tests
         public async Task Register_Post_ValidUser_RedirectsToLogin()
         {
             // Arrange
-            var newUser = new Usuario
+            var newUser = new Client
             {
                 UserLoginId = "newUser",
                 Password = "NewPass123",
                 Name = "Nuevo Usuario",
-                Email = "new@example.com"
+                Mail = "new@example.com"
             };
 
             // Act
@@ -190,7 +190,7 @@ namespace MusicRadioInc.Tests
         public async Task Register_Post_DuplicateUserLoginId_ReturnsViewWithModelError()
         {
             // Arrange
-            var existingUser = new Usuario { UserLoginId = "user1", Password = "AnotherPass", Email = "dup@example.com" };
+            var existingUser = new Client { UserLoginId = "user1", Password = "AnotherPass", Mail = "dup@example.com" };
 
             // Act
             var result = await _controller.Register(existingUser);
